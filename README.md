@@ -42,16 +42,45 @@ pip install -r requirements.txt
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
 
+## 🏗️ Implementation Summary
+
+The core logic lives in `pawpal_system.py` and is built from four classes (see `diagrams/uml_draft.mmd`):
+
+- **`Task`**: one care activity, with its description, duration, priority, category, frequency (daily/weekly), an optional 
+pinned start time, and the date it was last completed. It knows whether it's done today and whether it's due again.
+- **`Pet`**: a pet's details plus its own list of tasks, with methods to add, edit, and remove them.
+- **`Owner`**: the owner's daily constraints (minutes available, day start time, preferred categories) and their pets. `get_all_tasks()` returns every `(pet, task)` pair across all pets.
+- **`Scheduler`**: the planner. `generate_plan(today)` reads tasks from `Owner.get_all_tasks()`, keeps the ones due today, 
+sorts them by priority (ties go to preferred categories), and drops any that don't fit the time budget. It then places 
+pinned tasks at their set times and fits the rest into the open gaps. `detect_conflicts()` flags overlapping pinned tasks, 
+and `explain_plan()` describes why each task was scheduled or skipped.
+
+Times are stored as minutes since midnight and converted to `HH:MM` for display with `to_minutes()` and `format_time()`. 
+Run `python main.py` to see a sample schedule for two pets.
+
 ## 🖥️ Sample Output
 
 Paste a sample of your app's CLI or Streamlit output here so a reader can see what a generated plan looks like:
 
 ```
-# e.g.:
-# Daily plan for Biscuit (Golden Retriever):
-#   08:00 — Morning walk (30 min) [priority: high]
-#   09:00 — Feeding (10 min) [priority: high]
-#   ...
+========================================================================
+              Today's Schedule - Monday, October 26, 2026               
+========================================================================
+Owner: Jordan    Pets: Mochi (dog), Luna (cat)
+Time used: 90 of 120 min
+------------------------------------------------------------------------
+Time          Pet     Task                 Why
+------------------------------------------------------------------------
+07:30-07:40   Mochi   Breakfast            pinned to 07:30, high priority, preferred category (feeding)
+07:40-08:00   Mochi   Fetch in the yard    medium priority
+08:00-08:30   Mochi   Morning walk         pinned to 08:00, high priority
+08:30-08:40   Luna    Litter box           medium priority
+08:40-08:55   Luna    Brushing             low priority
+09:00-09:05   Luna    Thyroid pill         pinned to 09:00, high priority, preferred category (meds)
+------------------------------------------------------------------------
+Skipped (not enough time left today):
+  - Luna: Laser toy play (45 min, low priority)
+========================================================================
 ```
 
 ## 🧪 Testing PawPal+

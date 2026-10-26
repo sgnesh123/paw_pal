@@ -55,10 +55,24 @@ the wrong one to be edited or removed.
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
 
+I used AI throughout the project. It drafted the first UML diagram from the README scenario, turned that diagram into 
+dataclass skeletons, filled in the scheduling logic, and wrote the demo script and first tests. The most useful prompt 
+was asking it to review my skeleton for missing relationships and logic bottlenecks before I wrote any real logic. It found problems I hadn't noticed: the scheduler couldn't tell which pet a task belonged to, it had no way to know today's date, 
+and a simple true/false "completed" flag couldn't handle weekly tasks. Another useful prompt was asking it to check my design against the assignment's class requirements. It caught that I had lost a clear completion status, and that the Scheduler 
+needed to read tasks through Owner.get_all_tasks() to earn the multi-pet point.
+
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
 - How did you evaluate or verify what the AI suggested?
+
+For overlapping tasks, the AI offered two options, and I chose to pin tasks to their preferred time instead of treating it 
+as a hint. For tasks with duplicate names, I chose to look tasks up by the object itself instead of blocking duplicates. 
+I skipped the suggestion to turn priority into an Enum because the extra complexity wasn't worth it for this project. 
+To verify the result, I ran main.py with two pets and checked the printed schedule by hand. I confirmed that pinned tasks 
+stayed at their times, that flexible tasks filled the gaps without overlapping, that a weekly task done three days earlier 
+was correctly left out, and that the lowest-priority task was skipped when time ran out. I also ran the pytest tests for 
+task completion and adding tasks, and both passed.
 
 ---
 

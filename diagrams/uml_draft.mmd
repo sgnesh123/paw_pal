@@ -24,7 +24,7 @@ classDiagram
     }
 
     class Task {
-        +str title
+        +str description
         +int duration_minutes
         +str priority
         +str category
@@ -33,6 +33,7 @@ classDiagram
         +Optional~date~ last_completed
         +priority_value() int
         +mark_complete(on: date) None
+        +is_complete(today: date) bool
         +is_due_today(today: date) bool
     }
 
