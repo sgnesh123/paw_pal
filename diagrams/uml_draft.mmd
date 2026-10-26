@@ -4,12 +4,12 @@ classDiagram
     class Owner {
         +str name
         +int available_minutes
-        +str day_start_time
-        +list~str~ preferences
+        +int day_start
+        +list~str~ preferred_categories
         +list~Pet~ pets
         +add_pet(pet: Pet) None
-        +remove_pet(name: str) None
-        +get_all_tasks() list~Task~
+        +remove_pet(pet: Pet) None
+        +get_all_tasks() list~tuple~
     }
 
     class Pet {
@@ -18,9 +18,9 @@ classDiagram
         +int age
         +list~Task~ tasks
         +add_task(task: Task) None
-        +remove_task(title: str) None
-        +edit_task(title: str, **changes) None
-        +get_pending_tasks() list~Task~
+        +remove_task(task: Task) None
+        +edit_task(task: Task, **changes) None
+        +get_due_tasks(today: date) list~Task~
     }
 
     class Task {
@@ -29,20 +29,20 @@ classDiagram
         +str priority
         +str category
         +str frequency
-        +str preferred_time
-        +bool completed
+        +Optional~int~ preferred_start
+        +Optional~date~ last_completed
         +priority_value() int
-        +mark_complete() None
-        +is_due_today(date) bool
+        +mark_complete(on: date) None
+        +is_due_today(today: date) bool
     }
 
     class Scheduler {
         +Owner owner
         +list~tuple~ plan
-        +list~Task~ skipped
-        +generate_plan() list~tuple~
-        +sort_tasks(tasks: list~Task~) list~Task~
-        +filter_by_time(tasks: list~Task~) list~Task~
+        +list~tuple~ skipped
+        +generate_plan(today: date) list~tuple~
+        +sort_tasks(tasks: list~tuple~) list~tuple~
+        +filter_by_time(tasks: list~tuple~) list~tuple~
         +detect_conflicts() list~str~
         +explain_plan() str
     }
@@ -50,5 +50,5 @@ classDiagram
     Owner "1" *-- "0..*" Pet : owns
     Pet "1" *-- "0..*" Task : needs
     Scheduler "1" --> "1" Owner : plans for
+    Scheduler ..> Pet : reads
     Scheduler ..> Task : schedules
-
