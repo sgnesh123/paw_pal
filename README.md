@@ -1,6 +1,6 @@
 # PawPal+ (Module 2 Project)
 
-You are building **PawPal+**, a Streamlit app that helps a pet owner plan care tasks for their pet.
+You are building **PawPal+**, a Streamlit app that helps pet owners track and manage "care tasks" for their pet.
 
 ## Scenario
 
